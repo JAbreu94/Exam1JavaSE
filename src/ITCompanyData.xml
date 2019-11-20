@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
+<itCompany>
+    <programmer>
+        <id>1</id>
+        <firstName>Asdrúbal</firstName>
+        <lastName>Fonseca</lastName>
+        <salary>33</salary>
+        <startDate>1/11/2019</startDate>
+        <isActive>true</isActive>
+        <daysWorked>20</daysWorked>
+    </programmer>
+    <programmer>
+        <id>2</id>
+        <firstName>Tozé</firstName>
+        <lastName>Manecas</lastName>
+        <salary>42</salary>
+        <startDate>1/11/2019</startDate>
+        <isActive>true</isActive>
+        <daysWorked>20</daysWorked>
+    </programmer>
+    <programmer>
+        <id>3</id>
+        <firstName>Antonieta</firstName>
+        <lastName>Milhazes</lastName>
+        <salary>33</salary>
+        <startDate>1/11/2019</startDate>
+        <isActive>true</isActive>
+        <daysWorked>20</daysWorked>
+    </programmer>
+    <programmer>
+        <id>4</id>
+        <firstName>Gilberto</firstName>
+        <lastName>D'Apolónia</lastName>
+        <salary>55</salary>
+        <startDate>1/11/2019</startDate>
+        <isActive>true</isActive>
+        <daysWorked>20</daysWorked>
+    </programmer>
+    <project>
+        <id>1</id>
+        <projectName>Find Santa's Home Address</projectName>
+        <startDate>1/11/2019</startDate>
+        <endDate>31/12/2019</endDate>
+        <memberID>1</memberID>
+        <memberFunction>Slave, like Santa's little helpers</memberFunction>
+        <memberID>2</memberID>
+        <memberFunction>Also a slave but better paid</memberFunction>
+    </project>
+    <project>
+        <id>2</id>
+        <projectName>Interfere in USA 2020 elections</projectName>
+        <startDate>1/11/2019</startDate>
+        <endDate>31/10/2020</endDate>
+        <memberID>3</memberID>
+        <memberFunction>Sandwich maker</memberFunction>
+        <memberID>4</memberID>
+        <memberFunction>Luso-Russian hacker</memberFunction>
+    </project>
+</itCompany>
