@@ -1,6 +1,10 @@
 package com.company;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Scanner;
 
 public class Programmers {
     private String firstName;
@@ -10,6 +14,7 @@ public class Programmers {
     private Date startDate;
     private boolean isActive;
     private int daysWorked;
+    SimpleDateFormat dateFormat = new SimpleDateFormat("d/M/yyyy");
 
     public Programmers() {
     }
@@ -78,5 +83,38 @@ public class Programmers {
 
     public void setDaysWorked(int daysWorked) {
         this.daysWorked = daysWorked;
+    }
+
+    public void addProgrammer(ArrayList<Programmers> programmers) throws ParseException {
+        System.out.println("- Add a New Programmer -");
+        System.out.println();
+        Scanner scan = new Scanner(System.in);
+        System.out.print("First Name: ");
+        String firstName = scan.next();
+        System.out.println();
+        System.out.print("Last Name: ");
+        String lastName = scan.next();
+        System.out.println();
+        System.out.print("Salary per day: ");
+        double salary = scan.nextDouble();
+        System.out.println();
+        String assigned = "";
+        while (assigned != "y" || assigned != "n") {
+            System.out.print("Do you want to assign this programmer to a project? (y/n) ");
+            assigned = scan.next();
+            if (assigned == "y") {
+                boolean isActive = true;
+                Date startDate = new Date(System.currentTimeMillis());
+                startDate = dateFormat.format(startDate);
+//                Falta adicionar ao projecto
+            } else if (assigned == "n") {
+                boolean isActive = false;
+                Date startDate = dateFormat.parse("0/0/0000");
+            } else {
+                System.out.println();
+                System.out.println("Please answer y or n, Master...");
+                System.out.println();
+            }
+        }
     }
 }
