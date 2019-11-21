@@ -1,13 +1,16 @@
 package com.company;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Menu {
+    Programmers programmer = new Programmers();
+    ProjectTeam projectTeam = new ProjectTeam();
 
-    public void execute(ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeamsList) throws InterruptedException {
+    public void execute(ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeamsList) throws InterruptedException, ParseException {
         welcomeMessage();
-        mainMenu();
+        mainMenu(programmers, projectTeamsList);
     }
 
     private void welcomeMessage() throws InterruptedException {
@@ -20,7 +23,7 @@ public class Menu {
         System.out.println("Welcome, Master! We've been expecting your return...");
     }
 
-    private void mainMenu() throws InterruptedException {
+    private void mainMenu(ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams) throws InterruptedException, ParseException {
         boolean executing = true;
         Thread.sleep(1500);
         while (executing) {
@@ -43,10 +46,10 @@ public class Menu {
             System.out.println();
             switch (s) {
                 case "1":
-                    programmersMenu();
+                    programmersMenu(programmers, projectTeams);
                     break;
                 case "2":
-                    projectsMenu();
+                    projectsMenu(programmers, projectTeams);
                     break;
                 case "3":
 //                    Executar função que imprime o relatório
@@ -69,16 +72,15 @@ public class Menu {
         }
     }
 
-    private void programmersMenu() throws InterruptedException {
+    private void programmersMenu(ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams) throws ParseException {
         boolean executing = true;
-        Thread.sleep(1500);
         while (executing) {
             System.out.println();
             System.out.println("********************");
             System.out.println();
             System.out.println("==== PROGRAMMERS MENU COMMANDS ====");
             System.out.println("1 - Add New Programmer");
-            System.out.println("2 - Outras Cenas");
+            System.out.println("2 - Remove Programmer");
             System.out.println("3 - Mais Cenas");
             System.out.println("4 - Ainda Mais Cenas");
             System.out.println("5 - Montes de Cenas");
@@ -90,10 +92,10 @@ public class Menu {
             System.out.println();
             switch (s) {
                 case "1":
-//                    Executar função com switch para ler as hipóteses de editar lista de programadores
+                    programmer.addProgrammer(programmers, projectTeams);
                     break;
                 case "2":
-//                    Executar função com switch para ler as hipóteses de editar lista de projectos
+                    programmer.removeProgrammer(programmers, projectTeams);
                     break;
                 case "3":
 //                    Executar função que imprime o relatório
@@ -115,19 +117,18 @@ public class Menu {
         }
     }
 
-    private void projectsMenu() throws InterruptedException {
+    private void projectsMenu(ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams) throws ParseException {
         boolean executing = true;
-        Thread.sleep(1500);
         while (executing) {
             System.out.println();
             System.out.println("********************");
             System.out.println();
             System.out.println("===== PROJECTS MENU COMMANDS =====");
-            System.out.println("1 - Coisas");
-            System.out.println("2 - Outras Coisas");
-            System.out.println("3 - Mais Coisas");
-            System.out.println("4 - Ainda Mais Coisas");
-            System.out.println("5 - Montes de Coisas");
+            System.out.println("1 - Create New Project");
+            System.out.println("2 - Remove Project");
+            System.out.println("3 - Add Programmer to Project");
+            System.out.println("4 - Remove Programmer from Project");
+            System.out.println("5 - Edit End Date from Project");
             System.out.println("0 - Return to Main Menu");
             System.out.println();
             Scanner scan = new Scanner(System.in);
@@ -136,16 +137,16 @@ public class Menu {
             System.out.println();
             switch (s) {
                 case "1":
-//                    Executar função com switch para ler as hipóteses de editar lista de programadores
+                    projectTeam.newProject(programmers, projectTeams);
                     break;
                 case "2":
-//                    Executar função com switch para ler as hipóteses de editar lista de projectos
+                    projectTeam.removeProject(programmers, projectTeams);
                     break;
                 case "3":
-//                    Executar função que imprime o relatório
+                    projectTeam.addProgrammerToProject(programmers, projectTeams);
                     break;
                 case "4":
-//                    Executar função que guarda informação das listas no ficheiros
+                    projectTeam.removeProgrammerFromProject(programmers, projectTeams);
                     break;
                 case "5":
 //                    Executar função que passa um dia para a frente

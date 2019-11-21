@@ -7,6 +7,7 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -66,7 +67,7 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, ParseException {
         ArrayList<Programmers> programmersList = new ArrayList<>();
         ArrayList<ProjectTeam> projectTeamsList = new ArrayList<>();
 
