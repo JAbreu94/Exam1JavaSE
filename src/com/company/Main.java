@@ -14,12 +14,22 @@ import java.util.Date;
 
 public class Main {
 
-    public static void readFile(ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams) {
+    public static void readFile(ArrayList<Date> systemDate, ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("d/M/yyyy");
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse("src/ITCompanyData.xml");
+            NodeList savedSystemDateList = doc.getElementsByTagName("savedDate");
+            for (int i = 0; i < savedSystemDateList.getLength(); i++) {
+                Node savedSystemDate = savedSystemDateList.item(i);
+                if (savedSystemDate.getNodeType() == Node.ELEMENT_NODE) {
+                    Element date = (Element) savedSystemDate;
+                    Date savedDate = dateFormat.parse(date.getElementsByTagName("systemDate").item(0).getTextContent());
+                    systemDate.add(savedDate);
+                    System.out.println("Today is " + dateFormat.format(systemDate.get(0)));
+                }
+            }
             NodeList savedProgrammersList = doc.getElementsByTagName("programmer");
             for (int i = 0; i < savedProgrammersList.getLength(); i++) {
                 Node p = savedProgrammersList.item(i);
@@ -47,6 +57,7 @@ public class Main {
                     Date startDate = dateFormat.parse(project.getElementsByTagName("startDate").item(0).getTextContent());
                     Date endDate = dateFormat.parse(project.getElementsByTagName("endDate").item(0).getTextContent());
                     int countProgrammers = project.getElementsByTagName("memberID").getLength();
+                    boolean active = Boolean.parseBoolean(project.getElementsByTagName("active").item(0).getTextContent());
                     ArrayList<Integer> members = new ArrayList<>();
                     for (int j = 0; j < countProgrammers; j++) {
                         int member = Integer.parseInt(project.getElementsByTagName("memberID").item(j).getTextContent());
@@ -57,7 +68,7 @@ public class Main {
                         String function = project.getElementsByTagName("memberFunction").item(j).getTextContent();
                         functions.add(function);
                     }
-                    ProjectTeam team = new ProjectTeam(id, projectName, startDate, endDate, members, functions);
+                    ProjectTeam team = new ProjectTeam(id, projectName, startDate, endDate, active, members, functions);
                     projectTeams.add(team);
 //                    System.out.println(team.getProjectName());
                 }
@@ -67,14 +78,16 @@ public class Main {
         }
     }
 
+
     public static void main(String[] args) throws InterruptedException, ParseException {
         ArrayList<Programmers> programmersList = new ArrayList<>();
         ArrayList<ProjectTeam> projectTeamsList = new ArrayList<>();
+        ArrayList<Date> systemDate = new ArrayList<>();
 
-        readFile(programmersList, projectTeamsList);
+        readFile(systemDate, programmersList, projectTeamsList);
 
         Menu menu = new Menu();
 
-        menu.execute(programmersList, projectTeamsList);
+        menu.execute(systemDate, programmersList, projectTeamsList);
     }
 }

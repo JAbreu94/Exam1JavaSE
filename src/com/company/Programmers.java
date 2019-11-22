@@ -87,7 +87,7 @@ public class Programmers implements ProgrammersInterface{
         this.daysWorked = daysWorked;
     }
 
-    public void addProgrammer(ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams) throws ParseException {
+    public void addProgrammer(ArrayList<Date> systemDate, ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams) throws ParseException {
         int id = programmers.get(programmers.size() - 1).getId() + 1;
         System.out.println("- Add a New Programmer -");
         System.out.println("(You can type 0 to get back to the Menu)");
@@ -128,9 +128,10 @@ public class Programmers implements ProgrammersInterface{
                     }
                     System.out.println("0 - Cancel");
                     System.out.println();
-                    Date startDate = new Date();
+                    Date startDate = systemDate.get(0);
                     System.out.print("Which project you want to assign the new programmer for? ");
                     int projectID = scan.nextInt();
+                    scan.nextLine();
                     System.out.println();
                     for (ProjectTeam projectTeam : projectTeams) {
                         if (projectID == projectTeam.getId()) {

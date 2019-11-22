@@ -11,6 +11,7 @@ public class ProjectTeam {
     private String projectName;
     private Date startDate;
     private Date endDate;
+    private Boolean active;
     private ArrayList<Integer> programmers = new ArrayList<>();
     private ArrayList<String> programmerFunctions = new ArrayList<>();
     SimpleDateFormat dateFormat = new SimpleDateFormat("d/M/yyyy");
@@ -18,11 +19,12 @@ public class ProjectTeam {
     public ProjectTeam() {
     }
 
-    public ProjectTeam(int id, String projectName, Date startDate, Date endDate, ArrayList<Integer> programmers, ArrayList<String> programmerFunctions) {
+    public ProjectTeam(int id, String projectName, Date startDate, Date endDate, Boolean active, ArrayList<Integer> programmers, ArrayList<String> programmerFunctions) {
         this.id = id;
         this.projectName = projectName;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.active = active;
         this.programmers = programmers;
         this.programmerFunctions = programmerFunctions;
     }
@@ -59,6 +61,14 @@ public class ProjectTeam {
         this.endDate = endDate;
     }
 
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
     public ArrayList<Integer> getProgrammers() {
         return programmers;
     }
@@ -75,7 +85,7 @@ public class ProjectTeam {
         this.programmerFunctions = programmerFunctions;
     }
 
-    public void newProject(ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams) throws ParseException {
+    public void newProject(ArrayList<Date> systemDate, ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams) throws ParseException {
         int count = 0;
         for (Programmers programmer: programmers) {
             if (!programmer.isActive()) {
@@ -101,9 +111,20 @@ public class ProjectTeam {
             }
             System.out.print("Project End Date (day/month/year): ");
             String date = scan.nextLine();
+//            Check if it's a valid date before converting to date?
             Date endDate = dateFormat.parse(date);
-            Date startDate = new Date();
+            if (!endDate.after(systemDate.get(0))) {
+                System.out.println("That's not a valid date");
+                System.out.println("Remember that the system date is " + dateFormat.format(systemDate.get(0)));
+                System.out.println("Canceled... Back to the menu");
+                return;
+            }
+            Date startDate = systemDate.get(0);
             System.out.println();
+            if (date.equals("0")) {
+                System.out.println("Canceled... Back to the menu");
+                return;
+            }
             ArrayList<Integer> programmerIDs = new ArrayList<>();
             ArrayList<String> programmerFunctions = new ArrayList<>();
             boolean ended = false;
@@ -148,7 +169,7 @@ public class ProjectTeam {
                 for (Programmers programmer: programmers) {
                     if (programmer.getId() == programmerID) {
                         programmer.setActive(true);
-                        programmer.setStartDate(new Date());
+                        programmer.setStartDate(systemDate.get(0));
                     }
                 }
                 int inactive = 0;
@@ -158,7 +179,7 @@ public class ProjectTeam {
                     }
                 }
                 if (inactive == 0) {
-                    ProjectTeam project = new ProjectTeam(id, projectName, startDate, endDate, programmerIDs, programmerFunctions);
+                    ProjectTeam project = new ProjectTeam(id, projectName, startDate, endDate, active, programmerIDs, programmerFunctions);
                     projectTeams.add(project);
                     System.out.println("Project " + projectName + " was added!");
                     System.out.println();
@@ -176,7 +197,7 @@ public class ProjectTeam {
                                 correctlyAnswered = true;
                                 break;
                             case "n":
-                                ProjectTeam project = new ProjectTeam(id, projectName, startDate, endDate, programmerIDs, programmerFunctions);
+                                ProjectTeam project = new ProjectTeam(id, projectName, startDate, endDate, active, programmerIDs, programmerFunctions);
                                 projectTeams.add(project);
                                 System.out.println("Project " + projectName + " was added!");
                                 System.out.println();
@@ -204,7 +225,7 @@ public class ProjectTeam {
         }
     }
 
-    public void removeProject(ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams) throws ParseException {
+    public void removeProject(ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams) {
         if (projectTeams.size() > 2) {
             System.out.println("- Remove a Project -");
             System.out.println("(You can type 0 to get back to the Menu)");
@@ -231,7 +252,6 @@ public class ProjectTeam {
                         for (Programmers programmer: programmers) {
                             if (programmerID == programmer.getId()) {
                                 programmer.setActive(false);
-                                programmer.setStartDate(dateFormat.parse("0/0/0000"));
                             }
                         }
                     }
@@ -247,7 +267,7 @@ public class ProjectTeam {
         }
     }
 
-    public void addProgrammerToProject(ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams) {
+    public void addProgrammerToProject(ArrayList<Date> systemDate, ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams) {
         int count = 0;
         for (Programmers programmer: programmers) {
             if (!programmer.isActive()) {
@@ -306,7 +326,7 @@ public class ProjectTeam {
                     for (Programmers programmer: programmers) {
                         if (programmerID == programmer.getId() && !programmer.isActive()) {
                             programmer.setActive(true);
-                            programmer.setStartDate(new Date ());
+                            programmer.setStartDate(systemDate.get(0));
                             projectTeam.getProgrammers().add(programmerID);
                             projectTeam.getProgrammerFunctions().add(function);
                             System.out.println(programmer.getFirstName() + " " + programmer.getLastName() + " was added to the project " + projectTeam.getProjectName());
@@ -326,7 +346,7 @@ public class ProjectTeam {
         }
     }
 
-    public void removeProgrammerFromProject(ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams) throws ParseException {
+    public void removeProgrammerFromProject(ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams) {
         int count = 0;
         for (ProjectTeam projectTeam: projectTeams) {
             if (projectTeam.getProgrammers().size() > 2) {
@@ -337,6 +357,9 @@ public class ProjectTeam {
             System.out.println("All our projects have the minimum number of programmers (2)...");
             System.out.println("Back to the Menu...");
         } else {
+            System.out.println("- Remove a Programmer from a Project -");
+            System.out.println("(You can type 0 to get back to the Menu)");
+            System.out.println();
             System.out.println("List of Projects with at least 3 programmers:");
             System.out.println("(Remember you need to have at least 2 programmers in each project)");
             System.out.println();
@@ -358,7 +381,7 @@ public class ProjectTeam {
             }
             for (ProjectTeam projectTeam: projectTeams) {
                 if (projectID == projectTeam.getId()) {
-                    System.out.println("List of programmers from the project " + projectTeam.getProjectName() + ":");
+                    System.out.println("List of programmers from " + projectTeam.getProjectName() + ":");
                     System.out.println();
                     for (Programmers programmer: programmers) {
                         for (int i = 0; i < projectTeam.getProgrammers().size(); i++) {
@@ -369,7 +392,7 @@ public class ProjectTeam {
                     }
                     System.out.println("0 - Cancel");
                     System.out.println();
-                    System.out.print("Which programmer do you want to remove from the project " + projectTeam.getProjectName() + "? ");
+                    System.out.print("Which programmer do you want to remove from " + projectTeam.getProjectName() + "? ");
                     int programmerID = scan.nextInt();
                     scan.nextLine();
                     System.out.println();
@@ -383,7 +406,6 @@ public class ProjectTeam {
                                 System.out.println(programmer.getFirstName() + " " + programmer.getLastName() + " was removed from " + projectTeam.getProjectName());
                                 System.out.println();
                                 programmer.setActive(false);
-                                programmer.setStartDate(dateFormat.parse("0/0/0000"));
                                 projectTeam.getProgrammers().remove(i);
                                 projectTeam.getProgrammerFunctions().remove(i);
                                 return;
@@ -398,5 +420,51 @@ public class ProjectTeam {
             System.out.println("Master, that id was not on the list...");
             System.out.println("Back to the Menu...");
         }
+    }
+
+    public void changeEndDate(ArrayList<Date> systemDate, ArrayList<ProjectTeam> projectTeams) throws ParseException {
+        System.out.println("- Change End Date of a Project -");
+        System.out.println("(You can type 0 to get back to the Menu)");
+        System.out.println();
+        System.out.println("List of projects:");
+        System.out.println();
+        for (ProjectTeam projectTeam: projectTeams) {
+            System.out.println(projectTeam.getId() + " - " + projectTeam.getProjectName() + " - end date: " + dateFormat.format(projectTeam.getEndDate()));
+        }
+        System.out.println("0 - Cancel");
+        System.out.println();
+        Scanner scan = new Scanner(System.in);
+        System.out.print("Which project do you want to change the end date from? ");
+        int projectID = scan.nextInt();
+        scan.nextLine();
+        System.out.println();
+        if (projectID == 0) {
+            System.out.println("Canceled... Back to the menu");
+            return;
+        }
+        for (ProjectTeam projectTeam: projectTeams) {
+            if (projectID == projectTeam.getId()) {
+                System.out.print("New end date of " + projectTeam.getProjectName() + " (day/month/year): ");
+                String date = scan.nextLine();
+//            Check if it's a valid date before converting to date?
+                Date endDate = dateFormat.parse(date);
+                System.out.println();
+                if (date.equals("0")) {
+                    System.out.println("Canceled... Back to the menu");
+                    return;
+                }
+                if (!endDate.after(systemDate.get(0))) {
+                    System.out.println("That's not a valid date");
+                    System.out.println("Remember that the system date is " + dateFormat.format(systemDate.get(0)));
+                    System.out.println("Canceled... Back to the menu");
+                    return;
+                }
+                projectTeam.setEndDate(endDate);
+                System.out.println("End date from " + projectTeam.getProjectName() + " changed to " + dateFormat.format(projectTeam.getEndDate()));
+                return;
+            }
+        }
+        System.out.println("Master, that id was not on the list...");
+        System.out.println("Back to the Menu...");
     }
 }
