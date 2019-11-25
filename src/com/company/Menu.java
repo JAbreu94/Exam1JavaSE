@@ -13,22 +13,26 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
-public class Menu {
-    Programmers programmer = new Programmers();
-    ProjectTeam projectTeam = new ProjectTeam();
-    SimpleDateFormat otherDateFormat = new SimpleDateFormat("d MMMM yyyy", Locale.UK);
-    SimpleDateFormat dateFormat = new SimpleDateFormat("d/M/yyyy");
+import static java.time.temporal.ChronoUnit.DAYS;
 
-    public void execute(ArrayList<Date> systemDate, ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeamsList) throws InterruptedException, ParseException {
+public class Menu {
+    private Programmers programmer = new Programmers();
+    private ProjectTeam projectTeam = new ProjectTeam();
+    private SimpleDateFormat otherDateFormat = new SimpleDateFormat("d MMMM yyyy", Locale.UK);
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("d/M/yyyy");
+
+    public void execute(ArrayList<Date> systemDate, ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeamsList) throws InterruptedException {
         welcomeMessage(systemDate);
         mainMenu(systemDate, programmers, projectTeamsList);
     }
 
     private void welcomeMessage(ArrayList<Date> systemDate) throws InterruptedException {
+//        A welcome message to the user
         System.out.println("$ SITH PROGRAMMING SPECIALIZED IT COMPANY $");
         System.out.println("---Join the dark size of the program---");
         System.out.println();
@@ -40,7 +44,8 @@ public class Menu {
         System.out.println();
     }
 
-    private void mainMenu(ArrayList<Date> systemDate, ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams) throws InterruptedException, ParseException {
+    private void mainMenu(ArrayList<Date> systemDate, ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams) throws InterruptedException {
+//        Function for the main menu
         boolean executing = true;
         Thread.sleep(1500);
         while (executing) {
@@ -50,11 +55,12 @@ public class Menu {
             System.out.println();
             System.out.println("======= MAIN MENU COMMANDS =======");
             System.out.println("(" + dateFormat.format(systemDate.get(0)) + ")");
-            System.out.println("1 - Manage Programmers");
-            System.out.println("2 - Manage Teams");
-            System.out.println("3 - Print Report");
-            System.out.println("4 - Save System State");
-            System.out.println("5 - Update System");
+            System.out.println("1 - Add New Programmer");
+            System.out.println("2 - Remove Programmer");
+            System.out.println("3 - Manage Teams");
+            System.out.println("4 - Print Report");
+            System.out.println("5 - Save System State");
+            System.out.println("6 - Update System");
             System.out.println("0 - Quit");
             System.out.println();
             Scanner scan = new Scanner(System.in);
@@ -63,18 +69,21 @@ public class Menu {
             System.out.println();
             switch (s) {
                 case "1":
-                    programmersMenu(systemDate, programmers, projectTeams);
+                    programmer.addProgrammer(systemDate, programmers, projectTeams);
                     break;
                 case "2":
-                    projectsMenu(systemDate, programmers, projectTeams);
+                    programmer.removeProgrammer(programmers, projectTeams);
                     break;
                 case "3":
-//                    Executar função que imprime o relatório
+                    projectsMenu(systemDate, programmers, projectTeams);
                     break;
                 case "4":
-                    saveSystemState(systemDate, programmers, projectTeams);
+                    report(systemDate, programmers, projectTeams);
                     break;
                 case "5":
+                    saveSystemState(systemDate, programmers, projectTeams);
+                    break;
+                case "6":
                     updateDate(systemDate, programmers, projectTeams);
                     break;
                 case "0":
@@ -95,53 +104,8 @@ public class Menu {
         }
     }
 
-    private void programmersMenu(ArrayList<Date> systemDate, ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams) throws ParseException {
-        boolean executing = true;
-        while (executing) {
-            System.out.println();
-            System.out.println("********************");
-            System.out.println();
-            System.out.println("==== PROGRAMMERS MENU COMMANDS ====");
-            System.out.println("(" + dateFormat.format(systemDate.get(0)) + ")");
-            System.out.println("1 - Add New Programmer");
-            System.out.println("2 - Remove Programmer");
-//            System.out.println("3 - Mais Cenas");
-//            System.out.println("4 - Ainda Mais Cenas");
-//            System.out.println("5 - Montes de Cenas");
-            System.out.println("0 - Return to Main Menu");
-            System.out.println();
-            Scanner scan = new Scanner(System.in);
-            System.out.print("Your command: ");
-            String s = scan.next();
-            System.out.println();
-            switch (s) {
-                case "1":
-                    programmer.addProgrammer(systemDate, programmers, projectTeams);
-                    break;
-                case "2":
-                    programmer.removeProgrammer(programmers, projectTeams);
-                    break;
-//                case "3":
-////                    Executar função que imprime o relatório
-//                    break;
-//                case "4":
-////                    Executar função que guarda informação das listas no ficheiros
-//                    break;
-//                case "5":
-////                    Executar função que passa um dia para a frente
-//                    break;
-                case "0":
-                    System.out.println("Returning to the Main Menu");
-                    executing = false;
-                    break;
-                default:
-                    System.out.println("Please insert a valid command, master...");
-                    break;
-            }
-        }
-    }
-
-    private void projectsMenu(ArrayList<Date> systemDate, ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams) throws ParseException {
+    private void projectsMenu(ArrayList<Date> systemDate, ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams) {
+//        Function with sub menu to manage the projects
         boolean executing = true;
         while (executing) {
             System.out.println();
@@ -187,12 +151,14 @@ public class Menu {
         }
     }
 
-    private void saveSystemState(ArrayList<Date> systemDate, ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams) {
+    public void saveSystemState(ArrayList<Date> systemDate, ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams) {
+//        Function to save the data in the .xml file
         SimpleDateFormat dateFormat = new SimpleDateFormat("d/M/yyyy");
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+//        Erasing the existing info
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse("src/ITCompanyData.xml");
+            Document doc = builder.parse("xml/ITCompanyData.xml");
             NodeList savedSystemDateList = doc.getElementsByTagName("savedDate");
             for (int i = 0; i < savedSystemDateList.getLength(); i++) {
                 Node savedSystemDate = savedSystemDateList.item(i);
@@ -212,14 +178,13 @@ public class Menu {
                 i--;
             }
             NodeList company = doc.getElementsByTagName("itCompany");
-            for (Date d: systemDate) {
-                Element date = doc.createElement("savedDate");
-                company.item(0).appendChild(date);
-                Element saveDate = doc.createElement("systemDate");
-                saveDate.appendChild(doc.createTextNode(dateFormat.format(systemDate.get(0))));
-                date.appendChild(saveDate);
-            }
-
+//            Saving the date
+            Element date = doc.createElement("savedDate");
+            company.item(0).appendChild(date);
+            Element saveDate = doc.createElement("systemDate");
+            saveDate.appendChild(doc.createTextNode(dateFormat.format(systemDate.get(0))));
+            date.appendChild(saveDate);
+//            Saving the programmers list
             for (Programmers programmer: programmers) {
                 Element pg = doc.createElement("programmer");
                 company.item(0).appendChild(pg);
@@ -245,6 +210,7 @@ public class Menu {
                 daysWorked.appendChild(doc.createTextNode(Integer.toString(programmer.getDaysWorked())));
                 pg.appendChild(daysWorked);
             }
+//            Save the projects list
             for (ProjectTeam projectTeam: projectTeams) {
                 Element pj = doc.createElement("project");
                 company.item(0).appendChild(pj);
@@ -277,7 +243,7 @@ public class Menu {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(doc);
-            StreamResult result = new StreamResult(new File("src/ITCompanyData.xml"));
+            StreamResult result = new StreamResult(new File("xml/ITCompanyData.xml"));
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.transform(source, result);
             System.out.println("Your programmers and projects were saved!");
@@ -288,12 +254,14 @@ public class Menu {
     }
 
     private void updateDate(ArrayList<Date> systemDate, ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams) {
+//        Function to add 1 day to the system date
         int count = 0;
         for (ProjectTeam projectTeam: projectTeams) {
             if (systemDate.get(0).equals(projectTeam.getEndDate())) {
                 count++;
             }
         }
+//        Checking if after the function is executed we'll be left with at least 2 active projects
         if (projectTeams.size() - count < 2) {
             System.out.println("You have projects that end today");
             System.out.println("You always need to have a minimum of 2 active projects");
@@ -302,13 +270,13 @@ public class Menu {
         } else {
             System.out.println("- Updating System Date -");
             System.out.println();
+//            Finishing projects
             for (ProjectTeam projectTeam: projectTeams) {
                 if (systemDate.get(0).equals(projectTeam.getEndDate())) {
                     System.out.println(projectTeam.getProjectName() + " ended today");
                     System.out.println("You'll have " + projectTeam.getProgrammers().size() + " programmers available tomorrow");
                     System.out.println();
-//                    print how much i'll have to pay to these programmers
-//                    put project inactive
+                    projectTeam.setActive(false);
                     for (Programmers programmer: programmers) {
                         for (int pg: projectTeam.getProgrammers()) {
                             if (pg == programmer.getId()) {
@@ -318,21 +286,95 @@ public class Menu {
                     }
                 }
             }
+//            Adding one day to the count of days worked in the month
             for (Programmers programmer: programmers) {
                 if (programmer.isActive()) {
                     programmer.setDaysWorked(programmer.getDaysWorked() + 1);
                 }
             }
-//            Check if it's the end of the month
             Calendar c = Calendar.getInstance();
             c.setTime(systemDate.get(0));
+            int month = c.get(Calendar.MONTH);
             c.add(Calendar.DAY_OF_MONTH, 1);
             systemDate.set(0, c.getTime());
+            if (month != c.get(Calendar.MONTH)) {
+                System.out.println("It's the end of the month. Your programmers have been paid!");
+                for (Programmers programmer: programmers) {
+                    if (programmer.isActive()) {
+                        programmer.setDaysWorked(1);
+                    } else {
+                        programmer.setDaysWorked(0);
+                    }
+                }
+            }
             System.out.println("New date is " + dateFormat.format(systemDate.get(0)));
             System.out.println();
         }
 
 
 
+    }
+
+    private void report(ArrayList<Date> systemDate, ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams) {
+//        Function to print the report
+        int pWorked = 0;
+        int daysWorked = 0;
+        int daysLeftWorking = 0;
+        Calendar current = Calendar.getInstance();
+        current.setTime(systemDate.get(0));
+        LocalDate currentLocalDate = systemDate.get(0).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        for (Programmers programmer: programmers) {
+            if (programmer.getDaysWorked() > 0) {
+                pWorked += 1;
+                daysWorked += programmer.getDaysWorked();
+            }
+        }
+        for (ProjectTeam projectTeam: projectTeams) {
+            if (projectTeam.getActive()) {
+                Calendar end = Calendar.getInstance();
+                end.setTime(projectTeam.getEndDate());
+                if (current.get(Calendar.MONTH) == end.get(Calendar.MONTH)) {
+                    daysLeftWorking += end.get(Calendar.DAY_OF_MONTH) - current.get(Calendar.DAY_OF_MONTH);
+                } else {
+                    daysLeftWorking += (currentLocalDate.lengthOfMonth() - current.get(Calendar.DAY_OF_MONTH)) * projectTeam.getProgrammers().size();
+                }
+            }
+        }
+//        Printing report
+        System.out.println("=== SITH COMPANY REPORT ===");
+        System.out.println();
+        System.out.println("Sith Company is currently composed of " + projectTeams.size() + " project teams and " + programmers.size() + " programmers.");
+        System.out.println("This month, " + pWorked + " programmers have been working " + daysWorked + " days, and there are " + daysLeftWorking + " days left for working.");
+        System.out.println();
+        System.out.println("- Project teams details - ");
+        System.out.println();
+        for (ProjectTeam projectTeam: projectTeams) {
+            Calendar end = Calendar.getInstance();
+            end.setTime(projectTeam.getEndDate());
+            LocalDate endLocalDate = projectTeam.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate startLocalDate = projectTeam.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            if (systemDate.get(0).before(projectTeam.getEndDate()) || current.get(Calendar.MONTH) == end.get(Calendar.MONTH)) {
+                System.out.println("- Project team: " + projectTeam.getProjectName());
+                System.out.println();
+                for (Programmers programmer: programmers) {
+                    for (int i = 0; i < projectTeam.getProgrammers().size(); i++) {
+                        if (projectTeam.getProgrammers().get(i) == programmer.getId()) {
+                            long duration = DAYS.between(startLocalDate, endLocalDate);
+                            int nDaysWorked;
+                            if (DAYS.between(startLocalDate, currentLocalDate) < programmer.getDaysWorked() - 1) {
+                                nDaysWorked = (int)DAYS.between(startLocalDate, currentLocalDate) + 1;
+                            } else {
+                                nDaysWorked = programmer.getDaysWorked();
+                            }
+                            double salary = nDaysWorked * programmer.getSalary();
+                            System.out.println(programmer.getLastName() + ", " + programmer.getFirstName() + ", in charge of " + projectTeam.getProgrammerFunctions().get(i)
+                                    + " from " + dateFormat.format(projectTeam.getStartDate()) + " to " + dateFormat.format(projectTeam.getEndDate())
+                                    + "(duration " + duration + "), has worked " + nDaysWorked + " days this month (total salary $" + salary + ")");
+                        }
+                    }
+                }
+                System.out.println();
+            }
+        }
     }
 }

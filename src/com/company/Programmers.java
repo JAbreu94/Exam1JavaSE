@@ -1,10 +1,8 @@
 package com.company;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -16,7 +14,7 @@ public class Programmers implements ProgrammersInterface{
     private Date startDate;
     private boolean isActive;
     private int daysWorked;
-    SimpleDateFormat dateFormat = new SimpleDateFormat("d/M/yyyy");
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("d/M/yyyy");
 
     public Programmers() {
     }
@@ -35,32 +33,16 @@ public class Programmers implements ProgrammersInterface{
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
     public String getLastName() {
         return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public double getSalary() {
         return salary;
-    }
-
-    public void setSalary(double salary) {
-        this.salary = salary;
     }
 
     public Date getStartDate() {
@@ -87,7 +69,8 @@ public class Programmers implements ProgrammersInterface{
         this.daysWorked = daysWorked;
     }
 
-    public void addProgrammer(ArrayList<Date> systemDate, ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams) throws ParseException {
+    public void addProgrammer(ArrayList<Date> systemDate, ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams){
+//        Function to add a new programmer
         int id = programmers.get(programmers.size() - 1).getId() + 1;
         System.out.println("- Add a New Programmer -");
         System.out.println("(You can type 0 to get back to the Menu)");
@@ -108,7 +91,16 @@ public class Programmers implements ProgrammersInterface{
             return;
         }
         System.out.print("Salary per day: ");
-        double salary = scan.nextDouble();
+        String sSalary = scan.nextLine();
+        double salary;
+        try {
+            salary = Double.parseDouble(sSalary);
+        }
+        catch (NumberFormatException e) {
+            System.out.println("That's not a valid number");
+            System.out.println("Canceled... Back to the menu");
+            return;
+        }
         if (salary == 0.0) {
             System.out.println("Canceled... Back to the menu");
             return;
@@ -117,24 +109,35 @@ public class Programmers implements ProgrammersInterface{
         boolean correctlyAnswered = false;
         while (!correctlyAnswered) {
             System.out.print("Do you want to assign this programmer to a project? (y/n) ");
-            String assigned = scan.next();
+            String assigned = scan.nextLine();
             System.out.println();
             switch (assigned) {
                 case "y": {
-                    System.out.println("Projects list:");
+//                    Adding the new programmer to a project
+                    System.out.println("Active projects list:");
                     System.out.println();
                     for (ProjectTeam projectTeam : projectTeams) {
-                        System.out.println(projectTeam.getId() + " - " + projectTeam.getProjectName());
+                        if (projectTeam.getActive()) {
+                            System.out.println(projectTeam.getId() + " - " + projectTeam.getProjectName());
+                        }
                     }
                     System.out.println("0 - Cancel");
                     System.out.println();
                     Date startDate = systemDate.get(0);
                     System.out.print("Which project you want to assign the new programmer for? ");
-                    int projectID = scan.nextInt();
-                    scan.nextLine();
+                    String sProjectID = scan.nextLine();
+                    int projectID;
+                    try {
+                        projectID = Integer.parseInt(sProjectID);
+                    }
+                    catch (NumberFormatException e) {
+                        System.out.println("That's not a valid number");
+                        System.out.println("Canceled... Back to the menu");
+                        return;
+                    }
                     System.out.println();
                     for (ProjectTeam projectTeam : projectTeams) {
-                        if (projectID == projectTeam.getId()) {
+                        if (projectID == projectTeam.getId() && projectTeam.getActive()) {
                             System.out.print("Please, indicate the function of the new programmer: ");
                             String function = scan.nextLine();
                             System.out.println();
@@ -142,7 +145,7 @@ public class Programmers implements ProgrammersInterface{
                                 System.out.println("Canceled... Back to the menu");
                                 return;
                             }
-                            Programmers newMember = new Programmers(firstName, lastName, id, salary, startDate, true, 0);
+                            Programmers newMember = new Programmers(firstName, lastName, id, salary, startDate, true, 1);
                             programmers.add(newMember);
                             projectTeam.getProgrammers().add(id);
                             projectTeam.getProgrammerFunctions().add(function);
@@ -155,13 +158,21 @@ public class Programmers implements ProgrammersInterface{
                         System.out.println("Canceled... Back to the menu");
                         return;
                     } else {
-                        System.out.println("Sorry, but there's no project with that ID");
+                        System.out.println("Sorry, but there's no active project with that ID");
                         System.out.println("Canceled... Back to the menu");
                         return;
                     }
                 }
                 case "n": {
-                    Date startDate = dateFormat.parse("0/0/0000");
+//                    Setting the new programmer to inactive
+                    Date startDate;
+                    try {
+                        startDate = dateFormat.parse("0/0/0000");
+                    } catch (ParseException e) {
+                        System.out.println("That's not a valid date");
+                        System.out.println("Canceled... Back to the menu");
+                        return;
+                    }
                     Programmers newMember = new Programmers(firstName, lastName, id, salary, startDate, false, 0);
                     programmers.add(newMember);
                     System.out.println(firstName + " " + lastName + " was added to the programmers list");
@@ -181,6 +192,7 @@ public class Programmers implements ProgrammersInterface{
     }
 
     public void removeProgrammer(ArrayList<Programmers> programmers, ArrayList<ProjectTeam> projectTeams) {
+//        Function to remove an existing programmer
         System.out.println("- Remove a Programmer -");
         System.out.println();
         System.out.println("Programmers list:");
@@ -192,9 +204,29 @@ public class Programmers implements ProgrammersInterface{
         System.out.println();
         Scanner scan = new Scanner(System.in);
         System.out.print("Which programmer do you want to remove? ");
-        int idToRemove = scan.nextInt();
+        String sIdToRemove = scan.nextLine();
+        int idToRemove;
+        try {
+            idToRemove = Integer.parseInt(sIdToRemove);
+        }
+        catch (NumberFormatException e) {
+            System.out.println("That's not a valid number");
+            System.out.println("Canceled... Back to the menu");
+            return;
+        }
         System.out.println();
+//        Check if removing the programmer will leave a project with less than 2 programmers
         boolean wasActive = true;
+        for (ProjectTeam projectTeam: projectTeams) {
+            for (Integer pId: projectTeam.getProgrammers()) {
+                if (idToRemove == pId && projectTeam.getProgrammers().size() <= 2 && projectTeam.getActive()) {
+                    System.out.println("Sorry, but you can't remove this programmer since the active project he's working on has the minimum number of programmers");
+                    System.out.println("Canceled... Back to the menu");
+                    return;
+                }
+            }
+        }
+//        Removing programmer from programmers list
         for (int i = 0; i < programmers.size(); i++) {
             if (idToRemove == programmers.get(i).getId()) {
                 if (!programmers.get(i).isActive) {
@@ -207,6 +239,7 @@ public class Programmers implements ProgrammersInterface{
                 }
             }
         }
+//        Removing programmer from the projects
         for (ProjectTeam projectTeam : projectTeams) {
             for (int j = 0; j < projectTeam.getProgrammers().size(); j++) {
                 if (idToRemove == projectTeam.getProgrammers().get(j)) {
