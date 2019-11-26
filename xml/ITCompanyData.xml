@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<itCompany>
+<savedDate>
+<systemDate>22/11/2019</systemDate>
+</savedDate>
+<programmer>
+<id>1</id>
+<firstName>Asdrúbal</firstName>
+<lastName>Fonseca</lastName>
+<salary>33.0</salary>
+<startDate>1/11/2019</startDate>
+<isActive>true</isActive>
+<daysWorked>22</daysWorked>
+</programmer>
+<programmer>
+<id>2</id>
+<firstName>Tozé</firstName>
+<lastName>Manecas</lastName>
+<salary>42.0</salary>
+<startDate>1/11/2019</startDate>
+<isActive>true</isActive>
+<daysWorked>22</daysWorked>
+</programmer>
+<programmer>
+<id>3</id>
+<firstName>Gerubilda</firstName>
+<lastName>Gerubildes</lastName>
+<salary>40.0</salary>
+<startDate>1/11/2019</startDate>
+<isActive>true</isActive>
+<daysWorked>22</daysWorked>
+</programmer>
+<programmer>
+<id>4</id>
+<firstName>Gilberto</firstName>
+<lastName>D'Apolónia</lastName>
+<salary>55.0</salary>
+<startDate>1/11/2019</startDate>
+<isActive>true</isActive>
+<daysWorked>22</daysWorked>
+</programmer>
+<project>
+<id>1</id>
+<projectName>Find Santa's Home Address</projectName>
+<startDate>1/11/2019</startDate>
+<endDate>31/12/2019</endDate>
+<active>true</active>
+<memberID>1</memberID>
+<memberID>2</memberID>
+<memberFunction>Infiltrated elf</memberFunction>
+<memberFunction>Geolocation</memberFunction>
+</project>
+<project>
+<id>2</id>
+<projectName>Interfere in USA 2020 elections</projectName>
+<startDate>1/11/2019</startDate>
+<endDate>31/10/2020</endDate>
+<active>true</active>
+<memberID>3</memberID>
+<memberID>4</memberID>
+<memberFunction>Sandwich making and vodka production</memberFunction>
+<memberFunction>Luso-Russian hacker</memberFunction>
+</project>
+</itCompany>
